@@ -36,17 +36,21 @@ hermanos(Hermano1,Hermano2) :-
     
 compartenPadre(Hermano1,Hermano2) :-
     padreDe(UnProgenitor,Hermano1),
-    padreDe(UnProgenitor,Hermano2).
+    padreDe(UnProgenitor,Hermano2), 
+    Hermano1 \= Hermano2.
 
 compartenMadre(Hermano1,Hermano2) :-
     madreDe(UnaProgenitora,Hermano1),
-    madreDe(UnaProgenitora,Hermano2).
+    madreDe(UnaProgenitora,Hermano2), 
+    Hermano1 \= Hermano2.
 
 medioHermanos(Hijo1,Hijo2) :-
-    compartenPadre(Hijo1,Hijo2).
+    compartenPadre(Hijo1,Hijo2), 
+    not(compartenMadre(Hijo1,Hijo2)).
 
 medioHermanos(Hijo1,Hijo2) :-
-    compartenMadre(Hijo1,Hijo2).
+    compartenMadre(Hijo1,Hijo2),
+    not(compartenPadre(Hijo1,Hijo2)).
 
 tioDe(Tio,Sobrino) :-
     madreDe(Progenitor,Sobrino),
@@ -57,8 +61,13 @@ tioDe(Tio,Sobrino) :-
     hermanos(Tio,Progenitor).
 
 abueloMultiple(Abuelo) :-
-    padreDe(Abuelo,PadreOMadre),
-    tieneHijo(PadreOMadre).
+  abueloDe(Abuelo, UnNieto),
+  abueloDe(Abuelo, OtroNieto),
+  UnNieto \= OtroNieto.
+
+abueloDe(Abuelo, Nieto) :-
+  padreDe(Abuelo, Papa),
+  padreDe(Papa, Nieto).
 
 % BONUS
 % descendiente(Descendiente,Ascendiente) :-
