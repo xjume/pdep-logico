@@ -1,6 +1,12 @@
-jugador(amarillo). jugador(magenta). jugador(negro). jugador(rojo).
+jugador(amarillo). 
+jugador(magenta). 
+jugador(negro). 
+jugador(rojo).
 
-continente(americaDelSur). continente(americaDelNorte). continente(asia). continente(oceania).
+continente(americaDelSur). 
+continente(americaDelNorte). 
+continente(asia). 
+continente(oceania).
 
 estaEn(americaDelSur, argentina).
 estaEn(americaDelSur, brasil).
@@ -71,7 +77,7 @@ desocupado(Pais):-
 % Se cumple para los continentes en los cuales todos los jugadores ocupan algún país.
 % estaPeleado(americaDelSur).
 estaPeleado(Continente):-
-    forall(jugador(Jugador),ocupaPaisEnContinente(Continente,Pais,Jugador)).
+    forall(jugador(Jugador),ocupaPaisEnContinente(Continente,_,Jugador)).
 
 ocupaPaisEnContinente(Continente,Pais,Jugador):-
     estaEn(Continente,Pais),
@@ -85,11 +91,15 @@ continenteLibre(Jugador,Continente):-
 % Se cumple para los jugadores que ocupan países en un único continente.
 % seAtrinchero(rojo).
 seAtrinchero(Jugador):-
-    .
+    ocupaPaisEnContinente(UnContinente,_,Jugador),
+    forall(ocupa(Pais,Jugador), estaEn(UnContinente,Pais)).
 
 % Se cumple para los países cuyos limítrofes están todos ocupados por otros jugadores.
 % estaEnElHorno(argentina).
 estaEnElHorno(Pais):-
     ocupa(Pais,UnJugador),
-    forall(limitrofes(Pais,OtroPais),ocupa(OtroPais,OtroJugador)),
+    forall(limitrofes(Pais,OtroPais),ocupaDistintoJugador(OtroPais,UnJugador)).
+
+ocupaDistintoJugador(Pais,UnJugador):-
+    ocupa(Pais,OtroJugador),
     UnJugador \= OtroJugador.
